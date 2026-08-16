@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Terms & Conditions — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 py-16">
+  <h1 class="font-display text-3xl font-bold text-stone-800 mb-6">Terms & Conditions</h1>
+  <p class="text-stone-600 mb-4">Last updated: {% now "F Y" %}</p>
+  <p class="text-stone-600 mb-4">By using this website, you agree to the following terms.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">Website Use</h2>
+  <p class="text-stone-600 mb-4">Content on this site is for general information about {{ SITE_NAME }} and its products. We try to keep information accurate but do not guarantee it is error-free at all times.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">Product Information</h2>
+  <p class="text-stone-600 mb-4">Product images, weights and prices are indicative and may change without prior notice. Please confirm current details with our team before placing a bulk order.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">Contact</h2>
+  <p class="text-stone-600">Questions about these terms can be sent to {{ CONTACT_EMAIL }}.</p>
+  <p class="text-stone-400 text-sm mt-8">Note: replace this placeholder with terms reviewed by a legal professional before going live.</p>
+</section>
+{% endblock %}

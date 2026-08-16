@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Wholesale & Business Enquiry — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+  <h1 class="font-display text-3xl font-bold text-stone-800 mb-2 text-center">Looking for Quality Grain Products in Bulk?</h1>
+  <p class="text-stone-500 text-center mb-4">{{ SITE_NAME }} welcomes enquiries from:</p>
+  <div class="flex flex-wrap justify-center gap-2 mb-10">
+    {% for role in "Retailers,Distributors,Supermarkets,Grocery Stores,Restaurants,Hotels,Food Businesses,Institutional Buyers"|cut:" "|default:"" %}{% endfor %}
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Retailers</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Distributors</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Supermarkets</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Grocery Stores</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Restaurants</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Hotels</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Food Businesses</span>
+    <span class="px-3 py-1 bg-wheat-100 text-wheat-700 text-xs font-medium rounded-full">Institutional Buyers</span>
+  </div>
+
+  <form method="post" class="bg-white p-6 rounded-xl border border-stone-200 space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+      <label class="block text-sm font-medium text-stone-700 mb-1">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}<p class="text-red-600 text-xs mt-1">{{ field.errors.0 }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="w-full bg-wheat-600 hover:bg-wheat-700 text-white font-semibold py-3 rounded-lg transition">Send Business Enquiry</button>
+  </form>
+</section>
+{% endblock %}

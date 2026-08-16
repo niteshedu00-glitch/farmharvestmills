@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 py-16 prose prose-stone">
+  <h1 class="font-display text-3xl font-bold text-stone-800 mb-6">Privacy Policy</h1>
+  <p class="text-stone-600 mb-4">Last updated: {% now "F Y" %}</p>
+  <p class="text-stone-600 mb-4">{{ SITE_NAME }} ("we", "us", "our") respects your privacy. This page explains what information we collect through this website and how we use it.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">Information We Collect</h2>
+  <p class="text-stone-600 mb-4">When you submit an enquiry, contact form, or newsletter signup, we collect the details you provide — such as your name, phone number, email address and message.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">How We Use It</h2>
+  <p class="text-stone-600 mb-4">We use this information solely to respond to your enquiry, process any orders, and — if you opt in — send you updates about our products.</p>
+  <h2 class="font-semibold text-lg mt-6 mb-2">Contact Us</h2>
+  <p class="text-stone-600">For any privacy-related questions, contact us at {{ CONTACT_EMAIL }}.</p>
+  <p class="text-stone-400 text-sm mt-8">Note: replace this placeholder policy with one reviewed by a legal professional before going live, especially once online payments are introduced.</p>
+</section>
+{% endblock %}

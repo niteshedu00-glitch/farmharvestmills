@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ post.seo_title|default:post.title }} — {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ post.seo_description|default:post.excerpt }}{% endblock %}
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 py-12">
+  <p class="text-xs text-stone-400 mb-2">{{ post.published_at|date:"d M Y" }} &middot; By {{ post.author }}</p>
+  <h1 class="font-display text-3xl md:text-4xl font-bold text-stone-800 mb-6">{{ post.title }}</h1>
+  <div class="aspect-video rounded-xl overflow-hidden bg-stone-100 mb-8">
+    <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" class="w-full h-full object-cover">
+  </div>
+  <div class="prose prose-stone max-w-none text-stone-700 leading-relaxed whitespace-pre-line">{{ post.content }}</div>
+</article>
+
+{% if recent_posts %}
+<section class="max-w-3xl mx-auto px-4 pb-16">
+  <h2 class="font-semibold text-stone-800 mb-4">More Stories</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    {% for p in recent_posts %}
+    <a href="{{ p.get_absolute_url }}" class="block bg-white rounded-lg overflow-hidden border border-stone-200 hover:shadow-md transition">
+      <div class="aspect-video bg-stone-100"><img src="{{ p.thumbnail.url }}" class="w-full h-full object-cover"></div>
+      <p class="p-3 text-sm font-medium text-stone-800">{{ p.title }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

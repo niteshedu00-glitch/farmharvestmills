@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+  <h1 class="font-display text-3xl font-bold text-stone-800 mb-2 text-center">We'd Love to Hear From You</h1>
+  <p class="text-stone-500 text-center mb-12">Have a question about our products, distribution or business opportunities?</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div>
+      <h2 class="font-semibold text-lg text-stone-800 mb-4">Contact Details</h2>
+      <p class="text-stone-600 font-medium">{{ SITE_NAME }}</p>
+      <p class="text-stone-500 text-sm mt-1">Founder: Nitesh Verma</p>
+      <ul class="mt-4 space-y-2 text-sm text-stone-600">
+        <li>📍 {{ CONTACT_ADDRESS }}</li>
+        <li>📞 {{ CONTACT_PHONE }}</li>
+        <li>✉️ {{ CONTACT_EMAIL }}</li>
+      </ul>
+      {% if site_settings.google_maps_embed %}
+      <div class="mt-6 rounded-xl overflow-hidden border border-stone-200">{{ site_settings.google_maps_embed|safe }}</div>
+      {% endif %}
+    </div>
+
+    <form method="post" class="bg-white p-6 rounded-xl border border-stone-200 space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+      <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p class="text-red-600 text-xs mt-1">{{ field.errors.0 }}</p>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="w-full bg-wheat-600 hover:bg-wheat-700 text-white font-semibold py-3 rounded-lg transition">Send Enquiry</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

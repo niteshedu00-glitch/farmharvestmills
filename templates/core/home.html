@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Hero -->
+<section class="relative bg-wheat-100">
+  {% if banners %}
+    {% with banner=banners.0 %}
+    <div class="relative h-[480px] md:h-[560px] bg-cover bg-center flex items-center" style="background-image:url('{{ banner.image.url }}')">
+      <div class="absolute inset-0 hero-overlay"></div>
+      <div class="relative max-w-3xl mx-auto text-center px-4">
+        <h1 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">{{ banner.title|default:site_settings.hero_heading }}</h1>
+        <p class="text-stone-100 text-lg mb-8">{{ banner.subtitle|default:site_settings.hero_subheading }}</p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <a href="{{ banner.button_link|default:'/products/' }}" class="bg-wheat-600 hover:bg-wheat-700 text-white font-semibold px-6 py-3 rounded-lg transition">{{ banner.button_text|default:"Explore Our Products" }}</a>
+          <a href="{% url 'enquiries:contact' %}" class="bg-white/90 hover:bg-white text-stone-800 font-semibold px-6 py-3 rounded-lg transition">Contact Us</a>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+  {% else %}
+    <div class="max-w-4xl mx-auto text-center px-4 py-24">
+      <h1 class="font-display text-4xl md:text-5xl font-bold text-wheat-700 mb-4">{{ site_settings.hero_heading }}</h1>
+      <p class="text-stone-600 text-lg mb-8 max-w-2xl mx-auto">{{ site_settings.hero_subheading }}</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a href="{% url 'products:list' %}" class="bg-wheat-600 hover:bg-wheat-700 text-white font-semibold px-6 py-3 rounded-lg transition">Explore Our Products</a>
+        <a href="{% url 'enquiries:contact' %}" class="border border-wheat-600 text-wheat-700 hover:bg-wheat-50 font-semibold px-6 py-3 rounded-lg transition">Contact Us</a>
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+<!-- Why us -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="font-display text-3xl font-bold text-center text-stone-800 mb-2">Why {{ SITE_NAME }}?</h2>
+  <p class="text-center text-stone-500 mb-12">Quality You Can Trust</p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="text-center p-6">
+      <div class="w-14 h-14 mx-auto mb-4 bg-wheat-100 rounded-full flex items-center justify-center text-2xl">🌾</div>
+      <h3 class="font-semibold text-lg mb-2">Carefully Selected Grains</h3>
+      <p class="text-stone-500 text-sm">We source grains with a focus on quality, freshness and consistency.</p>
+    </div>
+    <div class="text-center p-6">
+      <div class="w-14 h-14 mx-auto mb-4 bg-wheat-100 rounded-full flex items-center justify-center text-2xl">🏭</div>
+      <h3 class="font-semibold text-lg mb-2">Hygienic Processing</h3>
+      <p class="text-stone-500 text-sm">Our products are processed and packed with attention to hygiene and quality.</p>
+    </div>
+    <div class="text-center p-6">
+      <div class="w-14 h-14 mx-auto mb-4 bg-wheat-100 rounded-full flex items-center justify-center text-2xl">🏠</div>
+      <h3 class="font-semibold text-lg mb-2">Made for Indian Families</h3>
+      <p class="text-stone-500 text-sm">Created for everyday Indian cooking and the food traditions we love.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="bg-white py-16 border-y border-stone-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="font-display text-3xl font-bold text-center text-stone-800 mb-10">Our Products</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {% for product in featured_products %}
+      <a href="{{ product.get_absolute_url }}" class="group block bg-stone-50 rounded-xl overflow-hidden border border-stone-200 hover:shadow-lg transition">
+        <div class="aspect-square overflow-hidden bg-stone-100">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-stone-800 text-sm">{{ product.name }}</h3>
+          <p class="text-xs text-stone-500 mt-1">{{ product.weight_display }}</p>
+          <p class="text-wheat-700 font-bold mt-2">₹{{ product.selling_price }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-10">
+      <a href="{% url 'products:list' %}" class="inline-block border border-wheat-600 text-wheat-700 hover:bg-wheat-50 font-semibold px-6 py-3 rounded-lg transition">View All Products</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Testimonials -->
+{% if testimonials %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="font-display text-3xl font-bold text-center text-stone-800 mb-10">What Our Customers Say</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for t in testimonials %}
+    <div class="bg-white p-6 rounded-xl border border-stone-200">
+      <p class="text-amber-500 mb-2">{% for i in "12345" %}{% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}{% endfor %}</p>
+      <p class="text-stone-600 text-sm italic mb-4">"{{ t.quote }}"</p>
+      <p class="font-semibold text-stone-800 text-sm">{{ t.customer_name }}</p>
+      <p class="text-stone-400 text-xs">{{ t.customer_role }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Wholesale CTA -->
+<section class="bg-wheat-700 text-white py-14">
+  <div class="max-w-4xl mx-auto text-center px-4">
+    <h2 class="font-display text-2xl md:text-3xl font-bold mb-3">Looking for Quality Grain Products in Bulk?</h2>
+    <p class="text-wheat-50 mb-6">We welcome enquiries from retailers, distributors, restaurants and institutional buyers.</p>
+    <a href="{% url 'enquiries:wholesale' %}" class="inline-block bg-white text-wheat-700 font-semibold px-6 py-3 rounded-lg hover:bg-wheat-50 transition">Send Business Enquiry</a>
+  </div>
+</section>
+
+{% endblock %}

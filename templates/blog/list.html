@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Blog — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h1 class="font-display text-3xl font-bold text-stone-800 mb-8">Recipes, News & Stories</h1>
+  {% if page_obj %}
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {% for post in page_obj %}
+    <a href="{{ post.get_absolute_url }}" class="block bg-white rounded-xl overflow-hidden border border-stone-200 hover:shadow-lg transition">
+      <div class="aspect-video bg-stone-100"><img src="{{ post.thumbnail.url }}" alt="{{ post.title }}" class="w-full h-full object-cover"></div>
+      <div class="p-5">
+        <p class="text-xs text-stone-400">{{ post.published_at|date:"d M Y" }}</p>
+        <h2 class="font-semibold text-lg text-stone-800 mt-1">{{ post.title }}</h2>
+        <p class="text-sm text-stone-500 mt-2">{{ post.excerpt }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% if page_obj.has_other_pages %}
+  <div class="flex justify-center gap-2 mt-10">
+    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border border-stone-300 rounded-lg text-sm hover:bg-stone-100">Previous</a>{% endif %}
+    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border border-stone-300 rounded-lg text-sm hover:bg-stone-100">Next</a>{% endif %}
+  </div>
+  {% endif %}
+  {% else %}
+  <p class="text-stone-500 text-center py-16">No posts yet — check back soon.</p>
+  {% endif %}
+</section>
+{% endblock %}
