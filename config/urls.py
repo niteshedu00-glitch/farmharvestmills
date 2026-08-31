@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.views.generic import RedirectView
 from django.conf.urls.static import static
 from apps.core import views as core_views
 
 urlpatterns = [
-    path('admin/dashboard/', core_views.admin_dashboard, name='admin_dashboard'),
+     path('admin/dashboard/', core_views.admin_dashboard, name='admin_dashboard'),
+    path('admin/', RedirectView.as_view(pattern_name='admin_dashboard', permanent=False)),
     path('admin/', admin.site.urls),
 
     path('', core_views.home, name='home'),

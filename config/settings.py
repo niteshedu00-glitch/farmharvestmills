@@ -109,6 +109,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGOUT_REDIRECT_URL = '/'
+
 # --- Site info (used in templates/footer/emails) -------------------------
 SITE_NAME = config('SITE_NAME', default='Farm Harvest Mills')
 SITE_TAGLINE = config('SITE_TAGLINE', default='Harvesting Purity, Milling Quality.')

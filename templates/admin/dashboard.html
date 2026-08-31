@@ -2,81 +2,281 @@
 {% load static %}
 
 {% block content %}
-<div style="padding:10px 0;">
+<style>
+  .fhm-dash { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1f2937; max-width: 1280px; }
+  .fhm-dash * { box-sizing: border-box; }
 
-  <h1 style="margin-bottom:20px;">Welcome back 👋</h1>
+  /* ---------- Header ---------- */
+  .fhm-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+  .fhm-header h1 { font-size: 24px; font-weight: 700; margin: 0 0 4px 0; color: #111827; }
+  .fhm-header p { margin: 0; color: #6b7280; font-size: 14px; }
+  .fhm-date { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 16px; font-size: 13px; color: #4b5563; font-weight: 500; white-space: nowrap; }
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px;">
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <div style="font-size:28px;font-weight:700;color:#96601f;">{{ product_count }}</div>
-      <div style="color:#666;font-size:13px;">Products</div>
+  /* ---------- Stat cards ---------- */
+  .fhm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .fhm-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; transition: transform .15s ease, box-shadow .15s ease; position: relative; overflow: hidden; }
+  .fhm-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.07); }
+  .fhm-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .fhm-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .fhm-icon svg { width: 19px; height: 19px; }
+  .fhm-icon.amber { background: #fef3e2; color: #b8792a; }
+  .fhm-icon.blue  { background: #e8f0fe; color: #2563eb; }
+  .fhm-icon.red   { background: #fee2e2; color: #dc2626; }
+  .fhm-icon.orange{ background: #fff4e5; color: #ea8c00; }
+  .fhm-icon.green { background: #e7f8ee; color: #16a34a; }
+  .fhm-icon.purple{ background: #f2e9fe; color: #7c3aed; }
+  .fhm-badge-alert { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fee2e2; color: #dc2626; }
+  .fhm-num { font-size: 30px; font-weight: 800; color: #111827; line-height: 1; }
+  .fhm-label { font-size: 13px; color: #6b7280; font-weight: 500; }
+
+  /* ---------- Section shell ---------- */
+  .fhm-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; margin-bottom: 24px; }
+  .fhm-section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .fhm-section-head h2 { font-size: 16px; font-weight: 700; margin: 0; color: #111827; display: flex; align-items: center; gap: 8px; }
+  .fhm-link { font-size: 13px; font-weight: 600; color: #b8792a; text-decoration: none; }
+  .fhm-link:hover { text-decoration: underline; }
+
+  /* ---------- Quick actions ---------- */
+  .fhm-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .fhm-action { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 16px; text-decoration: none; color: #1f2937; transition: all .15s ease; }
+  .fhm-action:hover { background: #fff; border-color: #d99a3f; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-2px); color: #1f2937; }
+  .fhm-action .fhm-icon { width: 34px; height: 34px; }
+  .fhm-action span { font-size: 13.5px; font-weight: 600; }
+
+  /* ---------- Table ---------- */
+  .fhm-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .fhm-table th { text-align: left; color: #9ca3af; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; padding: 0 10px 10px; border-bottom: 1px solid #f0f0f0; }
+  .fhm-table td { padding: 12px 10px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+  .fhm-table tr:last-child td { border-bottom: none; }
+  .fhm-table tr.is-new { background: #fffaf0; }
+  .fhm-name { font-weight: 600; color: #111827; }
+  .fhm-name small { display: block; font-weight: 400; color: #9ca3af; font-size: 11.5px; }
+  .fhm-view { color: #b8792a; font-weight: 600; text-decoration: none; font-size: 12.5px; }
+  .fhm-view:hover { text-decoration: underline; }
+
+  .fhm-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .fhm-status.new { background: #fee2e2; color: #dc2626; }
+  .fhm-status.pending { background: #fff4e5; color: #b8792a; }
+  .fhm-status.completed { background: #e7f8ee; color: #16a34a; }
+
+  .fhm-stock { font-weight: 700; }
+  .fhm-stock-badge { display: inline-flex; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .fhm-stock-badge.out { background: #fee2e2; color: #dc2626; }
+  .fhm-stock-badge.low { background: #fff4e5; color: #ea8c00; }
+  .fhm-stock-badge.ok  { background: #e7f8ee; color: #16a34a; }
+
+  /* ---------- Empty state ---------- */
+  .fhm-empty { text-align: center; padding: 36px 20px; color: #9ca3af; }
+  .fhm-empty .emoji { font-size: 28px; margin-bottom: 8px; display: block; }
+  .fhm-empty p { margin: 0; font-size: 14px; font-weight: 500; color: #6b7280; }
+
+  /* ---------- Two column layout ---------- */
+  .fhm-grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+
+  @media (max-width: 900px) {
+    .fhm-grid-2 { grid-template-columns: 1fr; }
+    .fhm-table thead { display: none; }
+    .fhm-table tr { display: block; border-bottom: 1px solid #f0f0f0; padding: 10px 0; }
+    .fhm-table td { display: flex; justify-content: space-between; align-items: center; border-bottom: none; padding: 4px 2px; }
+    .fhm-table td:before { content: attr(data-label); font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; }
+  }
+  @media (max-width: 560px) {
+    .fhm-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<div class="fhm-dash">
+
+  <!-- Welcome Header -->
+  <div class="fhm-header">
+    <div>
+      <h1>Welcome back, Admin 👋</h1>
+      <p>Here's what's happening with your business today.</p>
     </div>
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <div style="font-size:28px;font-weight:700;color:#96601f;">{{ category_count }}</div>
-      <div style="color:#666;font-size:13px;">Categories</div>
+    <div class="fhm-date">📅 {% now "l, F j, Y" %}</div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="fhm-stats">
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+      </div>
+      <div class="fhm-num">{{ product_count }}</div>
+      <div class="fhm-label">Total Products</div>
     </div>
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <div style="font-size:28px;font-weight:700;color:{% if new_enquiry_count %}#dc2626{% else %}#96601f{% endif %};">{{ enquiry_count }}</div>
-      <div style="color:#666;font-size:13px;">Enquiries {% if new_enquiry_count %}({{ new_enquiry_count }} new){% endif %}</div>
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.59a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+        </div>
+      </div>
+      <div class="fhm-num">{{ category_count }}</div>
+      <div class="fhm-label">Categories</div>
     </div>
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <div style="font-size:28px;font-weight:700;color:{% if low_stock_count %}#f59e0b{% else %}#96601f{% endif %};">{{ low_stock_count }}</div>
-      <div style="color:#666;font-size:13px;">Low Stock Products</div>
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+      </div>
+      <div class="fhm-num">{{ enquiry_count }}</div>
+      <div class="fhm-label">Total Enquiries</div>
     </div>
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <div style="font-size:28px;font-weight:700;color:#96601f;">{{ blog_count }}</div>
-      <div style="color:#666;font-size:13px;">Published Blog Posts</div>
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+        {% if new_enquiry_count %}<span class="fhm-badge-alert">Action needed</span>{% endif %}
+      </div>
+      <div class="fhm-num">{{ new_enquiry_count }}</div>
+      <div class="fhm-label">New Enquiries</div>
+    </div>
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        {% if low_stock_count %}<span class="fhm-badge-alert">Low stock</span>{% endif %}
+      </div>
+      <div class="fhm-num">{{ low_stock_count }}</div>
+      <div class="fhm-label">Low Stock Products</div>
+    </div>
+
+    <div class="fhm-card">
+      <div class="fhm-card-top">
+        <div class="fhm-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        </div>
+      </div>
+      <div class="fhm-num">{{ blog_count }}</div>
+      <div class="fhm-label">Published Blog Posts</div>
+    </div>
+
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="fhm-section">
+    <div class="fhm-section-head"><h2>⚡ Quick Actions</h2></div>
+    <div class="fhm-actions">
+      <a href="{% url 'admin:products_product_add' %}" class="fhm-action">
+        <div class="fhm-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+        <span>Add Product</span>
+      </a>
+      <a href="{% url 'admin:products_product_changelist' %}" class="fhm-action">
+        <div class="fhm-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></div>
+        <span>Manage Products</span>
+      </a>
+      <a href="{% url 'admin:products_category_changelist' %}" class="fhm-action">
+        <div class="fhm-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.59a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path></svg></div>
+        <span>Manage Categories</span>
+      </a>
+      <a href="{% url 'admin:enquiries_enquiry_changelist' %}" class="fhm-action">
+        <div class="fhm-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+        <span>View Enquiries</span>
+      </a>
+      <a href="{% url 'admin:blog_blogpost_changelist' %}" class="fhm-action">
+        <div class="fhm-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+        <span>Manage Blog Posts</span>
+      </a>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+  <!-- Recent Enquiries + Low Stock -->
+  <div class="fhm-grid-2">
 
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <h2 style="font-size:15px;margin-bottom:12px;">Recent Enquiries</h2>
+    <div class="fhm-section">
+      <div class="fhm-section-head">
+        <h2>📥 Recent Enquiries</h2>
+        <a href="{% url 'admin:enquiries_enquiry_changelist' %}" class="fhm-link">View all →</a>
+      </div>
+
       {% if recent_enquiries %}
-      <table style="width:100%;font-size:13px;border-collapse:collapse;">
-        <thead><tr style="text-align:left;color:#888;"><th style="padding:6px 0;">Name</th><th>Type</th><th>Status</th><th>Date</th></tr></thead>
+      <table class="fhm-table">
+        <thead>
+          <tr><th>Name</th><th>Type</th><th>Status</th><th>Date</th><th></th></tr>
+        </thead>
         <tbody>
-        {% for e in recent_enquiries %}
-          <tr style="border-top:1px solid #f0f0f0;">
-            <td style="padding:8px 0;"><a href="{% url 'admin:enquiries_enquiry_change' e.id %}">{{ e.name }}</a></td>
-            <td>{{ e.get_enquiry_type_display }}</td>
-            <td>{{ e.get_status_display }}</td>
-            <td>{{ e.created_at|date:"d M" }}</td>
+          {% for e in recent_enquiries %}
+          <tr class="{% if e.status == 'new' %}is-new{% endif %}">
+            <td data-label="Name">
+              <div class="fhm-name">{{ e.name }}<small>{{ e.email }}</small></div>
+            </td>
+            <td data-label="Type">{{ e.get_enquiry_type_display }}</td>
+            <td data-label="Status">
+              {% if e.status == 'new' %}
+                <span class="fhm-status new">🔴 New</span>
+              {% elif e.status == 'in_progress' %}
+                <span class="fhm-status pending">🟠 Pending</span>
+              {% else %}
+                <span class="fhm-status completed">🟢 Completed</span>
+              {% endif %}
+            </td>
+            <td data-label="Date">{{ e.created_at|date:"d M Y" }}</td>
+            <td data-label="">
+              <a href="{% url 'admin:enquiries_enquiry_change' e.id %}" class="fhm-view">View →</a>
+            </td>
           </tr>
-        {% endfor %}
+          {% endfor %}
         </tbody>
       </table>
       {% else %}
-      <p style="color:#999;font-size:13px;">No enquiries yet.</p>
+      <div class="fhm-empty">
+        <span class="emoji">🎉</span>
+        <p>No enquiries yet</p>
+      </div>
       {% endif %}
-      <p style="margin-top:12px;"><a href="{% url 'admin:enquiries_enquiry_changelist' %}">View all enquiries →</a></p>
     </div>
 
-    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;">
-      <h2 style="font-size:15px;margin-bottom:12px;">Low Stock Products</h2>
+    <div class="fhm-section">
+      <div class="fhm-section-head">
+        <h2>⚠️ Low Stock Products</h2>
+        <a href="{% url 'admin:products_product_changelist' %}" class="fhm-link">View all →</a>
+      </div>
+
       {% if low_stock_products %}
-      <table style="width:100%;font-size:13px;border-collapse:collapse;">
-        <thead><tr style="text-align:left;color:#888;"><th style="padding:6px 0;">Product</th><th>Stock</th></tr></thead>
+      <table class="fhm-table">
+        <thead>
+          <tr><th>Product</th><th>Stock</th><th></th></tr>
+        </thead>
         <tbody>
-        {% for p in low_stock_products %}
-          <tr style="border-top:1px solid #f0f0f0;">
-            <td style="padding:8px 0;"><a href="{% url 'admin:products_product_change' p.id %}">{{ p.name }}</a></td>
-            <td style="color:{% if p.stock == 0 %}#dc2626{% else %}#f59e0b{% endif %};font-weight:600;">{{ p.stock }}</td>
+          {% for p in low_stock_products %}
+          <tr>
+            <td data-label="Product">
+              <div class="fhm-name">{{ p.name }}</div>
+            </td>
+            <td data-label="Stock">
+              {% if p.stock == 0 %}
+                <span class="fhm-stock-badge out">Out of stock</span>
+              {% elif p.stock < 5 %}
+                <span class="fhm-stock-badge low">{{ p.stock }} left · Critical</span>
+              {% else %}
+                <span class="fhm-stock-badge low">{{ p.stock }} left · Low</span>
+              {% endif %}
+            </td>
+            <td data-label="">
+              <a href="{% url 'admin:products_product_change' p.id %}" class="fhm-view">Edit →</a>
+            </td>
           </tr>
-        {% endfor %}
+          {% endfor %}
         </tbody>
       </table>
       {% else %}
-      <p style="color:#999;font-size:13px;">All products are well stocked.</p>
+      <div class="fhm-empty">
+        <span class="emoji">✓</span>
+        <p>All products are well stocked</p>
+      </div>
       {% endif %}
-      <p style="margin-top:12px;"><a href="{% url 'admin:products_product_changelist' %}">View all products →</a></p>
     </div>
 
-  </div>
-
-  <div style="margin-top:32px;">
-    <a href="{% url 'admin:index' %}" style="color:#96601f;">← Back to full admin index</a>
   </div>
 
 </div>
