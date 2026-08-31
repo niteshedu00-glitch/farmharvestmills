@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.conf import settings
-from django.core.mail import mail_admins
 from .forms import EnquiryForm, NewsletterForm
+from .emails import notify_new_enquiry, send_customer_confirmation
 
 
 def contact_view(request):
@@ -14,15 +13,8 @@ def contact_view(request):
         form = EnquiryForm(request.POST)
         if form.is_valid():
             enquiry = form.save()
-            if settings.ADMIN_NOTIFY_EMAIL:
-                try:
-                    mail_admins(
-                        subject=f"New Enquiry: {enquiry.name} ({enquiry.get_enquiry_type_display()})",
-                        message=f"{enquiry.message}\n\nPhone: {enquiry.phone}\nEmail: {enquiry.email}",
-                        fail_silently=True,
-                    )
-                except Exception:
-                    pass
+            notify_new_enquiry(enquiry)
+            send_customer_confirmation(enquiry)
             messages.success(request, "Thank you! Your enquiry has been received. Our team will contact you shortly.")
             return redirect('enquiries:contact')
     else:
@@ -38,6 +30,8 @@ def wholesale_view(request):
             enquiry = form.save(commit=False)
             enquiry.enquiry_type = 'wholesale'
             enquiry.save()
+            notify_new_enquiry(enquiry)
+            send_customer_confirmation(enquiry)
             messages.success(request, "Thank you! Your business enquiry has been received. Our team will get in touch soon.")
             return redirect('enquiries:wholesale')
     else:
